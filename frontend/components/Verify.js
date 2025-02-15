@@ -1,12 +1,15 @@
 import React, { useRef, useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TextInput } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import PageButton from './Button';
 import { Poppins_400Regular, Poppins_600SemiBold, Poppins_700Bold } from '@expo-google-fonts/poppins';  
 import { useFonts } from 'expo-font';
 
 export default function Verify() {
   const navigation = useNavigation();
+  const route = useRoute();
+  const { phoneNumber } = route.params;
+
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
     Poppins_600SemiBold,
@@ -61,7 +64,7 @@ export default function Verify() {
       <View style={styles.content}>
         <Text style={styles.title}>Verify OTP</Text>
         <Text style={styles.subtitle}>
-          Enter the OTP you received on the phone number you provided.
+          Enter the OTP you received on +1{phoneNumber}.
         </Text>
         <View style={styles.form}>
           <Text style={styles.inputHeader}>Enter OTP</Text>
