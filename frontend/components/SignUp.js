@@ -6,7 +6,8 @@ import PageButton from './Button';
 import { Poppins_400Regular, Poppins_600SemiBold, Poppins_700Bold } from '@expo-google-fonts/poppins';
 import  { Inter_400Regular, Inter_500Medium } from '@expo-google-fonts/inter';
 import { useState } from 'react';
-
+import  axios  from 'axios';
+import { Alert } from 'react-native';
 // import { Poppins_700Bold } from '@expo-google-fonts/poppins';
 import { useFonts } from 'expo-font';
 
@@ -14,9 +15,28 @@ import { useFonts } from 'expo-font';
 
 export default function SignUp() {
 
+  const [isNewUser, setIsNewUser] = useState(false);
+  
+
+  const navigate = useNavigation();
+  // 🔹 Send OTP to backend
+  const sendOtp = async (phNo) => {
+    try {
+      console.log(phNo);
+        const response = await axios.post("https://c5e1-164-58-12-125.ngrok-free.app/send-otp", { phoneNumber: phNo });
+        setIsNewUser(response.data.isNewUser);
+        console.log(response.data.isNewUser);
+        navigate.navigate('Verify', { phoneNumber: phNo, isNewUser: response.data.isNewUser });
+        Alert.alert("OTP Sent", "Check your SMS.");
+    } catch (error) {
+        Alert.alert("Error", "Could not send OTP.");
+        console.log(error);
+    }
+  };
+
   const [phoneNumber, setPhoneNumber] = useState('');
 
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
     Poppins_600SemiBold,
@@ -46,7 +66,8 @@ export default function SignUp() {
              onChangeText={(text) => setPhoneNumber(text)} />
             <PageButton title={'Get OTP'} bgColor='#0f455C' onPress={() => {
               if (phoneNumber.length === 10) {
-                navigation.navigate('Verify', { phoneNumber });
+                // navigation.navigate('Verify', { phoneNumber });
+                sendOtp(phoneNumber);
               } else {
                 alert('Please enter a valid phone number');
               }

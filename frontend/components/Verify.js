@@ -4,11 +4,45 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import PageButton from './Button';
 import { Poppins_400Regular, Poppins_600SemiBold, Poppins_700Bold } from '@expo-google-fonts/poppins';  
 import { useFonts } from 'expo-font';
+import axios from 'axios';
+import { Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
 
 export default function Verify() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { phoneNumber } = route.params;
+  const { phoneNumber, isNewUser } = route.params;
+  const [name, setName] = useState("");
+  const [user, setUser] = useState(null);
+  const verifyOtp = async (phNo, otp, isNew, name) => {
+    try {
+      console.log(phNo, otp, isNew, name);
+        const response = await axios.post("https://c5e1-164-58-12-125.ngrok-free.app/verify-otp", {
+            phoneNumber: phNo,
+            code: otp,
+            name: isNew ? name : undefined,
+        });
+
+        await AsyncStorage.setItem("user", JSON.stringify(response.data.user));
+        setUser(response.data.user);
+        Alert.alert("Success", "You are logged in!");
+    } catch (error) {
+        Alert.alert("Error", "Invalid OTP.");
+        console.log(error);
+    }
+};
+
+
+
+
+
+
+
+
+
+
 
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
@@ -62,11 +96,24 @@ export default function Verify() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.title}>Verify OTP</Text>
+        <Text style={styles.title}>Final Step</Text>
         <Text style={styles.subtitle}>
           Enter the OTP you received on +1{phoneNumber}.
         </Text>
         <View style={styles.form}>
+          {
+            isNewUser && (
+              <>
+                <Text style={styles.inputHeader}>Enter Your Name</Text>
+                <TextInput
+                  style={styles.formInput}
+                  placeholder="Full Name"
+                  value={name}
+                  onChangeText={setName}
+                />
+              </>
+            )
+          }
           <Text style={styles.inputHeader}>Enter OTP</Text>
           <View style={styles.otpContainer}>
             {otp.map((digit, index) => (
@@ -92,6 +139,8 @@ export default function Verify() {
                 }
               // Handle OTP verification logic here.
               console.log("OTP entered:", otp.join(''));
+              console.log('Name:', name);
+              verifyOtp(phoneNumber, otp.join(''), isNewUser, name);
             }}
           />
         </View>
@@ -137,6 +186,17 @@ const styles = StyleSheet.create({
     borderColor: '#d9d9d9',
     borderWidth: 1,
   },
+  formInput: {
+    height: 40,
+    padding: 10,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: '#d9d9d9',
+    marginBottom: 10,
+    fontFamily: 'Inter_400Regular',
+  },
+
   inputHeader: {
     color: '#0F455C',
     fontSize: 16,
