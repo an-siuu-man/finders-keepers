@@ -3,7 +3,10 @@ import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import PageButton from './Button';
-import { Poppins_400Regular, Poppins_600SemiBold, Poppins_700Bold } from '@expo-google-fonts/poppins';  
+import { Poppins_400Regular, Poppins_600SemiBold, Poppins_700Bold } from '@expo-google-fonts/poppins';
+import  { Inter_400Regular, Inter_500Medium } from '@expo-google-fonts/inter';
+
+
 // import { Poppins_700Bold } from '@expo-google-fonts/poppins';
 import { useFonts } from 'expo-font';
 
@@ -15,7 +18,9 @@ export default function SignUp() {
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
     Poppins_600SemiBold,
-    Poppins_700Bold
+    Poppins_700Bold,
+    Inter_400Regular,
+    Inter_500Medium
   });
 
 
@@ -99,5 +104,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderColor: '#d9d9d9',
     marginBottom: 10,
+    fontFamily: 'Inter_400Regular',
   }
 });
