@@ -3,7 +3,10 @@ import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import PageButton from './Button';
-import { Poppins_400Regular, Poppins_600SemiBold, Poppins_700Bold } from '@expo-google-fonts/poppins';  
+import { Poppins_400Regular, Poppins_600SemiBold, Poppins_700Bold } from '@expo-google-fonts/poppins';
+import  { Inter_400Regular, Inter_500Medium } from '@expo-google-fonts/inter';
+import { useState } from 'react';
+
 // import { Poppins_700Bold } from '@expo-google-fonts/poppins';
 import { useFonts } from 'expo-font';
 
@@ -11,11 +14,15 @@ import { useFonts } from 'expo-font';
 
 export default function SignUp() {
 
+  const [phoneNumber, setPhoneNumber] = useState('');
+
   const navigation = useNavigation();
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
     Poppins_600SemiBold,
-    Poppins_700Bold
+    Poppins_700Bold,
+    Inter_400Regular,
+    Inter_500Medium
   });
 
 
@@ -31,8 +38,19 @@ export default function SignUp() {
           </Text>
           <View style={styles.form}>
             <Text style={styles.inputHeader}>Phone Number</Text>
-            <TextInput style={styles.formInput} placeholder="(123) 456-7890" />
-            <PageButton title={'Get OTP'} bgColor='#0f455C' onPress={() => navigation.navigate('Verify')} />
+            <TextInput style={styles.formInput}
+             placeholder="1234567890" 
+             value={phoneNumber}
+             keyboardType='numeric'
+             maxLength={10}
+             onChangeText={(text) => setPhoneNumber(text)} />
+            <PageButton title={'Get OTP'} bgColor='#0f455C' onPress={() => {
+              if (phoneNumber.length === 10) {
+                navigation.navigate('Verify', { phoneNumber });
+              } else {
+                alert('Please enter a valid phone number');
+              }
+              }} />
           </View>
           {/* Add your sign-up form components here */}
         </View>
@@ -99,5 +117,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderColor: '#d9d9d9',
     marginBottom: 10,
+    fontFamily: 'Inter_400Regular',
   }
 });

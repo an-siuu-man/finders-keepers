@@ -49,11 +49,7 @@ export default function Home() {
             onPress={() => navigation.navigate('SignUp')}
           />
         </View>
-        <View style={styles.footer}>
-          <View styles={styles.activeStep}></View>
-          <View styles={styles.inactiveStep}></View>
-          <View styles={styles.inactiveStep}></View>
-        </View>
+
       </SafeAreaView>
     </LinearGradient>
   );
@@ -97,21 +93,5 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'flex-end',
-  },
-  activeStep: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: '#FFFFFF',
-    marginRight: 5,
-  },
-
-  inactiveStep: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: '#FFFFFF',
-    marginRight: 5,
-    opacity: 0.5,
-  },
+  }
 });
