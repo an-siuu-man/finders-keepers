@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, TextInput, Button, Alert, StyleSheet, Text } from "react-native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import SignUp from "./SignUp";
 
 const AuthScreen = ({ setUser }) => {
     const [phoneNumber, setPhoneNumber] = useState("");
@@ -11,9 +12,9 @@ const AuthScreen = ({ setUser }) => {
     const [isNewUser, setIsNewUser] = useState(false);
 
     // 🔹 Send OTP to backend
-    const sendOtp = async () => {
+    const sendOtp = async (phNo) => {
         try {
-            const response = await axios.post("https://2150-164-58-12-125.ngrok-free.app/send-otp", { phoneNumber });
+            const response = await axios.post("https://2150-164-58-12-125.ngrok-free.app/send-otp", { phoneNumber: phNo });
             setIsNewUser(response.data.isNewUser);
             setStep("otp");
             Alert.alert("OTP Sent", "Check your SMS.");
@@ -42,16 +43,17 @@ const AuthScreen = ({ setUser }) => {
     return (
         <View style={styles.container}>
             {step === "phone" ? (
-                <>
-                    <Text style={styles.label}>Enter Phone Number:</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Phone Number"
-                        onChangeText={setPhoneNumber}
-                        keyboardType="phone-pad"
-                    />
-                    <Button title="Send OTP" onPress={sendOtp} />
-                </>
+                // <>
+                //     <Text style={styles.label}>Enter Phone Number:</Text>
+                //     <TextInput
+                //         style={styles.input}
+                //         placeholder="Phone Number"
+                //         onChangeText={setPhoneNumber}
+                //         keyboardType="phone-pad"
+                //     />
+                //     <Button title="Send OTP" onPress={sendOtp} />
+                // </>
+                <SignUp/>
             ) : (
                 <>
                     {isNewUser && (
