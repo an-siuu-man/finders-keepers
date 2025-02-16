@@ -9,6 +9,7 @@ import {
   Alert,
   StyleSheet,
   SafeAreaView,
+  Switch
 } from "react-native";
 import MapComponent from "./MapComponent";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -36,6 +37,9 @@ export default function ReportFormSh() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isWithMe, setIsWithMe] = useState(false);
+
+
 
   const openImagePicker = async (fromCamera = false) => {
     const permissionResult = fromCamera
@@ -138,12 +142,37 @@ export default function ReportFormSh() {
             placeholder="Item description"
           />
         </View>
-        <View style={{ width:'100%', height:400, marginVertical: 20,}}>
+        <View style={{ width:'100%', height:500, marginVertical: 20,}}>
         <Text style={styles.formHeader}>Location</Text>
+        <Text style={styles.subtitle}>Tap to select the location where you found the item.</Text>
           <MapComponent />
         </View>
+
+        <Text style={styles.formHeader}>Where to find it</Text>
+        <Text style={styles.subtitle}>Please select an option.</Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', width: '100%', marginBottom: 20 }}>
+          <Switch
+            trackColor={{ false: "", true: "#81b0ff" }}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={() => {setIsWithMe(!isWithMe)}}
+            value={isWithMe}
+            style={{ marginRight: 10 }}
+          />
+          <Text style={styles.subtitle}>{isWithMe ? "I have the item with me" : "I don't have it with me"}</Text>
+          
+        </View>
+        { !isWithMe && 
+        <>
+        <Text style={styles.inputHeader}>Please provide details</Text>
+        <TextInput 
+            style={[styles.formInputMulti, {width: '100%'}]}
+            placeholder="Where can it be found..."
+            multiline
+          />
+          </>
+          }
         <View style={{ marginBottom: 20, width: '100%' }}>
-          <PageButton title="Submit" bgColor="#0F455C" />
+          <PageButton title="Submit" bgColor="#0F455C" onPress={() => {handleSubmit}}/>
         </View>
       </KeyboardAwareScrollView>
     </SafeAreaView>
@@ -176,7 +205,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'Poppins_400Regular',
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: 'left',
   },
   buttonsContainer: {
     flexDirection: 'row',

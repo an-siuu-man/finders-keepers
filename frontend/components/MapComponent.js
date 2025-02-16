@@ -65,7 +65,8 @@ const MapComponent = () => {
 
 const styles = StyleSheet.create({
     container: { flex: 1 },
-    map: { width: '100%', height: '100%', borderRadius: 8  },
+    map: { width: '100%', height: '100%', borderRadius: 8,    borderWidth: 1,
+        borderColor: '#d9d9d9', marginVertical: 10, },
 });
 
 export default MapComponent;
