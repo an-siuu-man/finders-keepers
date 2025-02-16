@@ -138,7 +138,8 @@ export default function ReportFormSh() {
             placeholder="Item description"
           />
         </View>
-        <View style={{ width:'100%', height:400, marginVertical: 20, borderRadius: 10 }}>
+        <View style={{ width:'100%', height:400, marginVertical: 20,}}>
+        <Text style={styles.formHeader}>Location</Text>
           <MapComponent />
         </View>
         <View style={{ marginBottom: 20, width: '100%' }}>
@@ -203,6 +204,13 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 250,
     borderRadius: 10,
+    marginTop: 10,
+  },
+  loadingContainer: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
     marginTop: 10,
   },
   formHeader: {

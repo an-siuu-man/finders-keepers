@@ -1,10 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
+import * as Location from 'expo-location';
 
 const MapComponent = () => {
     const [marker, setMarker] = useState(null);
+    const [initialRegion, setInitialRegion] = useState(null);
 
+    useEffect(() => {
+        (async () => {
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                Alert.alert('Permission to access location was denied');
+                return;
+            }
+
+            let location = await Location.getCurrentPositionAsync({});
+            setInitialRegion({
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01,
+            });
+        })();
+    }, []);
+
+    
     const handleMapPress = (e) => {
         const coordinate = e.nativeEvent.coordinate;
         setMarker(coordinate);
@@ -21,12 +42,7 @@ const MapComponent = () => {
         <View style={styles.container}>
             <MapView
                 style={styles.map}
-                initialRegion={{
-                    latitude: 35.199154556419685,
-                    longitude: -97.44489630000001,
-                    latitudeDelta: 0.01,
-                    longitudeDelta: 0.01,
-                }}
+                initialRegion={initialRegion}
                 onPress={handleMapPress}
                 showsUserLocation={true}
                 showsMyLocationButton={true}
@@ -49,7 +65,7 @@ const MapComponent = () => {
 
 const styles = StyleSheet.create({
     container: { flex: 1 },
-    map: { width: '100%', height: '100%' },
+    map: { width: '100%', height: '100%', borderRadius: 8  },
 });
 
 export default MapComponent;
