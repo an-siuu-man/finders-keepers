@@ -1,16 +1,42 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity, Image, ActivityIndicator, Alert, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  ActivityIndicator,
+  Alert,
+  StyleSheet,
+  SafeAreaView,
+} from "react-native";
+import MapComponent from "./MapComponent";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import * as ImagePicker from "expo-image-picker";
-import { useNavigation } from "@react-navigation/native";
+import PageButton from "./Button";
+import { useFonts } from 'expo-font';
+import {
+  Poppins_400Regular, Poppins_600SemiBold, Poppins_700Bold,
+  Inter_400Regular, Inter_500Medium,
+  DMSans_400Regular, DMSans_500Medium
+} from '@expo-google-fonts/poppins';
 
 export default function ReportFormSh() {
-  const navigation = useNavigation();
+  const [fontsLoaded] = useFonts({
+    Poppins_400Regular,
+    Poppins_600SemiBold,
+    Poppins_700Bold,
+    Inter_400Regular,
+    Inter_500Medium,
+    DMSans_400Regular,
+    DMSans_500Medium,
+  });
+  
   const [imageUri, setImageUri] = useState(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // 🔹 Open Camera or Select Image from Gallery
   const openImagePicker = async (fromCamera = false) => {
     const permissionResult = fromCamera
       ? await ImagePicker.requestCameraPermissionsAsync()
@@ -31,24 +57,22 @@ export default function ReportFormSh() {
     }
   };
 
-  // 🔹 Call Backend to Generate AI-Powered Description
   const generateDescription = async (base64Image) => {
     setLoading(true);
     try {
-      const response = await fetch("https://9153-164-58-12-125.ngrok-free.app/generate-description", {
+      const response = await fetch("https://c5e1-164-58-12-125.ngrok-free.app/generate-description", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ base64Image }),
       });
-  
-      // ✅ Check if response is valid JSON
+
       const textResponse = await response.text();
       console.log("Raw Server Response:", textResponse);
-  
+
       try {
         const data = JSON.parse(textResponse);
         console.log("Parsed JSON Response:", data);
-  
+
         if (data.title && data.description) {
           setTitle(data.title);
           setDescription(data.description);
@@ -57,7 +81,7 @@ export default function ReportFormSh() {
         }
       } catch (jsonError) {
         console.error("JSON Parse Error:", jsonError);
-        Alert.alert("Error", "Server returned invalid data. Check console for details.");
+        Alert.alert("Error", "Server returned invalid data.");
       }
     } catch (error) {
       console.error("Error:", error);
@@ -66,63 +90,151 @@ export default function ReportFormSh() {
       setLoading(false);
     }
   };
-  
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Report a Lost Item</Text>
-
-      {/* Open Camera Button */}
-      <TouchableOpacity style={styles.button} onPress={() => openImagePicker(true)}>
-        <Text style={styles.buttonText}>📸 Take a Picture</Text>
-      </TouchableOpacity>
-
-      {/* Select Image from Gallery */}
-      <TouchableOpacity style={styles.button} onPress={() => openImagePicker(false)}>
-        <Text style={styles.buttonText}>📂 Select from Gallery</Text>
-      </TouchableOpacity>
-
-      {/* Display Captured Image */}
-      {imageUri && <Image source={{ uri: imageUri }} style={styles.image} />}
-
-      {/* Loading Indicator */}
-      {loading && (
-        <View style={{ marginTop: 10, alignItems: "center" }}>
-          <ActivityIndicator size="large" color="#007bff" />
-          <Text>Generating description...</Text>
+    <SafeAreaView style={styles.container}>
+      <KeyboardAwareScrollView
+        contentContainerStyle={styles.scrollContainer}
+        enableOnAndroid={true}
+        extraScrollHeight={5}
+        keyboardShouldPersistTaps="handled"
+      >
+        <Text style={styles.title}>Report a Lost Item</Text>
+        <Text style={styles.subtitle}>Please fill in all the details</Text>
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity style={styles.buttonStyle} onPress={() => openImagePicker(true)}>
+            <Text style={styles.buttonText}>{imageUri ? 'Retake Picture' : 'Take Picture'}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.buttonStyle} onPress={() => openImagePicker()}>
+            <Text style={styles.buttonText}>Upload from Gallery</Text>
+          </TouchableOpacity>
         </View>
-      )}
 
-      {/* AI-Populated Fields */}
-      <Text style={styles.label}>Title:</Text>
-      <TextInput value={title} onChangeText={setTitle} style={styles.input} placeholder="Item title" />
+        {imageUri && <Image source={{ uri: imageUri }} style={styles.image} />}
 
-      <Text style={styles.label}>Description:</Text>
-      <TextInput
-        value={description}
-        onChangeText={setDescription}
-        multiline
-        style={styles.input}
-        placeholder="Item description"
-      />
+        {loading && (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#007bff" />
+            <Text>Generating description...</Text>
+          </View>
+        )}
 
-      <TouchableOpacity style={styles.submitButton}>
-        <Text style={styles.submitText}>✅ Submit Report</Text>
-      </TouchableOpacity>
-    </View>
+        <Text style={styles.formHeader}>Title and Description</Text>
+        <View style={styles.form}>
+          <Text style={styles.inputHeader}>Title</Text>
+          <TextInput
+            value={title}
+            onChangeText={setTitle}
+            style={styles.formInput}
+            placeholder="Item title"
+          />
+
+          <Text style={styles.inputHeader}>Description</Text>
+          <TextInput
+            value={description}
+            onChangeText={setDescription}
+            multiline
+            style={styles.formInputMulti}
+            placeholder="Item description"
+          />
+        </View>
+        <View style={{ width:'100%', height:400, marginVertical: 20, borderRadius: 10 }}>
+          <MapComponent />
+        </View>
+        <View style={{ marginBottom: 20, width: '100%' }}>
+          <PageButton title="Submit" bgColor="#0F455C" />
+        </View>
+      </KeyboardAwareScrollView>
+    </SafeAreaView>
   );
 }
 
-// 🔹 Styles
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", alignItems: "center", padding: 20 },
-  header: { fontSize: 20, fontWeight: "bold", marginBottom: 10 },
-  button: { backgroundColor: "#007bff", padding: 12, borderRadius: 8, marginVertical: 8 },
-  buttonText: { color: "#fff", fontSize: 16, fontWeight: "bold" },
-  image: { width: 200, height: 200, borderRadius: 10, marginTop: 10 },
-  label: { alignSelf: "flex-start", marginTop: 10, fontSize: 16, fontWeight: "bold" },
-  input: { borderWidth: 1, padding: 8, borderRadius: 8, width: "100%", marginVertical: 8, backgroundColor: "#fff" },
-  submitButton: { backgroundColor: "#28a745", padding: 12, borderRadius: 8, marginVertical: 12 },
-  submitText: { color: "#fff", fontSize: 16, fontWeight: "bold" },
-});
+  container: {
+    flex: 1,
+    backgroundColor: '#F2F2F2',
+    height: '130%',
+  },
+  scrollContainer: {
+    width: '100%',
+    // flexGrow: 1,
+    height: 'fit-content',
+    alignItems: 'flex-start',
+    paddingHorizontal: 20,
 
+  },
+  title: {
+    color: '#0F455C',
+    fontSize: 28,
+    fontFamily: 'Poppins_600SemiBold',
+    marginTop: 20,
+    textAlign: 'center',
+  },
+  subtitle: {
+    color: '#0F455C',
+    fontSize: 14,
+    fontFamily: 'Poppins_400Regular',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginBottom: 15,
+  },
+  buttonStyle: {
+    backgroundColor: 'white',
+    borderWidth: 2,
+    borderColor: '#d9d9d9',
+    borderStyle: 'dashed',
+    padding: 12,
+    borderRadius: 8,
+    width: '48%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonText: {
+    fontFamily: 'DMSans_500Medium',
+    fontSize: 16,
+    color: "#c3c3c3",
+  },
+  image: {
+    width: '100%',
+    height: 250,
+    borderRadius: 10,
+    marginTop: 10,
+  },
+  formHeader: {
+    color: '#0F455C',
+    fontSize: 20,
+    fontFamily: 'Poppins_600SemiBold',
+    marginTop: 20,
+  },
+  form: {
+    backgroundColor: '#fff',
+    width: '100%',
+    padding: 20,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#d9d9d9',
+    marginTop: 10,
+  },
+  formInput: {
+    height: 45,
+    borderWidth: 1,
+    borderColor: '#d9d9d9',
+    borderRadius: 5,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+  },
+  formInputMulti: {
+    height: 90,
+    textAlignVertical: 'top',
+    borderWidth: 1,
+    borderColor: '#d9d9d9',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+  },
+});
