@@ -27,6 +27,6 @@ graph TD;
   c --> d
 
   d --> |Fuzzy Logic and PostgreSQL| e(Most Relevant Stuff)
-  e --> |Confirm that you want to claim the item| Claim item
+  e --> |Confirm that you want to claim the item| f(Claim item)
 ```
 
