@@ -8,42 +8,50 @@ import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/
 import Home from './components/Home';
 import SignUp from './components/SignUp'; // Your sign-up page component
 import Verify from './components/Verify'; // Your verification page component
-const Stack = createStackNavigator();
+import ReportFormSh from "./components/ReportFormSh";
+  
+
+
+
+// const Stack = createStackNavigator();
 const App = () => {
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
+    // const [user, setUser] = useState(null);
+    // const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const checkUser = async () => {
-            const storedUser = await AsyncStorage.getItem("user");
-            if (storedUser) setUser(JSON.parse(storedUser));
-            setLoading(false);
-        };
-        checkUser();
-    }, []);
+    // useEffect(() => {
+    //     const checkUser = async () => {
+    //         const storedUser = await AsyncStorage.getItem("user");
+    //         if (storedUser) setUser(JSON.parse(storedUser));
+    //         setLoading(false);
+    //     };
+    //     checkUser();
+    // }, []);
 
-    const logout = () => {
-        setUser(null);
-        AsyncStorage.removeItem("user");
-    };
+    // const logout = () => {
+    //     setUser(null);
+    //     AsyncStorage.removeItem("user");
+    // };
 
-    if (loading) return <ActivityIndicator size="large" style={styles.loading} />;
+    // if (loading) return <ActivityIndicator size="large" style={styles.loading} />;
 
+    // return (
+    //   <NavigationContainer>
+    //   <Stack.Navigator
+    //     screenOptions={{
+    //       headerShown: false, // Hide header if you don't need it
+    //       // This option creates a slide-in horizontal transition
+    //       cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+    //     }}
+    //   >
+    //     <Stack.Screen name="Home" component={Home} />
+    //     <Stack.Screen name="SignUp" component={SignUp} />
+    //     <Stack.Screen name="Verify" component={Verify} />
+    //   </Stack.Navigator>
+    // </NavigationContainer>
+    // );
     return (
-      <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false, // Hide header if you don't need it
-          // This option creates a slide-in horizontal transition
-          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-        }}
-      >
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="SignUp" component={SignUp} />
-        <Stack.Screen name="Verify" component={Verify} />
-      </Stack.Navigator>
-    </NavigationContainer>
-    );
+      <ReportFormSh />
+    )
 };
 
 const styles = StyleSheet.create({
