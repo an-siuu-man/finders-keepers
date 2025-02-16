@@ -6,12 +6,16 @@ const twilio = require("twilio");
 const admin = require("firebase-admin");
 const { v4: uuidv4 } = require("uuid"); // Import UUID generator
 const { Pool } = require("pg");
+const OpenAI = require("openai");
 
 // Initialize Express App
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(bodyParser.json());
+app.use(express.json({ limit: "50mb" }));  // Allow up to 50MB
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
+
+
 app.use(cors());
 
 // Twilio Configuration
@@ -23,7 +27,6 @@ const client = twilio(accountSid, authToken);
 
 // 🔹 Initialize Firebase Admin SDK
 const serviceAccount = require("./finderskeepers-f1d08-firebase-adminsdk-fbsvc-b32fa9d322.json");
-const { Pool } = require("pg");
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
 });
@@ -215,6 +218,71 @@ app.delete("/delete-found-item/:id", async (req, res) => {
         res.status(500).json({ error: "Error deleting item", details: error.message });
     }
 });
+
+
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY, // Make sure your .env contains the API key
+  });
+
+
+// 🔹 **New Route: Generate Item Description from Image**
+app.post("/generate-description", async (req, res) => {
+    try {
+      const { base64Image } = req.body;
+      if (!base64Image) {
+        return res.status(400).json({ error: "Image is required" });
+      }
+  
+      console.log("Processing image with OpenAI...");
+  
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [
+          {
+            role: "user",
+            content: [
+                { 
+                    type: "text", 
+                    text: "Describe this lost item. Provide a short and clear title without the words 'Title:' or 'Lost Item'. Then, write a description in first-person as if you are the person who found it. Mention any unique identifiers." 
+                  }
+                  ,
+              {
+                type: "image_url",
+                image_url: {
+                  url: `data:image/jpeg;base64,${base64Image}`,
+                  detail: "low", // Use "high" if needed for detailed analysis
+                },
+              },
+            ],
+          },
+        ],
+      });
+  
+      console.log("🔍 OpenAI Full Response:", response);
+
+    const ai_response = response.choices[0].message.content;
+
+    // Extract and format response
+    const lines = ai_response.split("\n").map((line) => line.trim());
+    let title = lines[0].replace(/^\*\*Title:\*\*\s*/, ""); // Remove "**Title:**"
+    let description = lines.slice(1).join(" "); // Merge remaining lines
+
+    // Ensure first-person formatting in description
+    if (!description.includes("I found") && !description.includes("Found this")) {
+        description = `Found this item: ${description}`;
+    }
+
+    res.status(200).json({
+      title: title || "Lost Item",
+      description: description || "No description available.",
+    });
+  } catch (error) {
+    console.error("🚨 OpenAI API Error:", error);
+    res.status(500).json({ error: "Failed to generate description", details: error.message });
+  }
+});
+
+
 
 
 // 🔹 Start the Server
