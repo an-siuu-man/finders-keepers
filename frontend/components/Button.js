@@ -20,7 +20,7 @@ export default function PageButton({ title, onPress, bgColor="transparent", text
 
 const styles = StyleSheet.create({
     button: {
-        marginTop: 10,
+        margin: 5,
         paddingHorizontal: 20,
         paddingVertical: 10,
         borderRadius: 10, 

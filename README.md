@@ -1,2 +1,52 @@
 # finders-keepers
 Project for Hacklahoma 2025
+
+## Inspiration
+We all know the feeling of sudden panic when you realize something is missing. You check your pockets, your bag, retrace your steps, but it’s nowhere to be found. Now imagine that happening all the time—that’s life for one of our team members. He’s lost his AirPods in a coffee shop, lost his glasses to the Kansas wind, and misplaced more things than we can count.
+
+Instead of just sympathizing (by endlessly teasing him), we decided to do what Comp Sci students do best—solve the problem with tech. Our Solution? A mobile app designed specifically for college students to report lost items, map their locations, and connect with finders in real time.
+
+While we can’t change our friend’s clumsiness, we can make losing things a little less stressful and finding them a whole lot easier.
+## Tech Stack
+Front end
+  - React native
+      For seamless UI on any operating system for phones. Fucntion calls to
+      map and and expo camera
+  - JavaScript
+      Internal logic
+  - OpenAi Vision
+      Describes image tokens passed through it to populate various
+      attribute fields in tables
+  - Twilio and Firebase
+      Authentication and verification of phone numbers
+
+Back end
+  - PostGre SQL
+      Stores data attributes of lost itme like location, picture, time, userID, title, description. Claimed items
+      have their own table.
+  - ExpressJS with axios
+      API endpoint pipelineing
+
+
+## Use case
+
+
+## Features
+
+
+## On the Horizon
+
+
+
+```mermaid
+graph TD;
+  a(Get Started) --> |New User| b(Verify Phone)
+  a --> |Current User| c(Login with OTP)
+
+  b --> d(Describe what you've lost)
+  c --> d
+
+  d --> |Fuzzy Logic and PostgreSQL| e(Most Relevant Stuff)
+  e --> |Confirm that you want to claim the item| f(Claim item)
+```
+
