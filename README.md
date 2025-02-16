@@ -1,4 +1,4 @@
-# finders-keepers
+# Finders Keepers
 Project for Hacklahoma 2025
 
 ## Inspiration
