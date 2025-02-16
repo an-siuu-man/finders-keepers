@@ -2,11 +2,11 @@
 Project for Hacklahoma 2025
 
 ## Inspiration
-One of our members has a habit of losing their things. he once lost his airpods in a coffee shop, lost his 
-glasses to the kansas wind and much more. In true Comp Sci fashion, we thought of creating an app for college
-students to report mising items on a single platform, using elements of fuzzy logic. One can search for items
-and contact the person who reported the item as lost to get it back.
+We all know the feeling of sudden panic when you realize something is missing. You check your pockets, your bag, retrace your steps, but it’s nowhere to be found. Now imagine that happening all the time—that’s life for one of our team members. He’s lost his AirPods in a coffee shop, lost his glasses to the Kansas wind, and misplaced more things than we can count.
 
+Instead of just sympathizing (by endlessly teasing him), we decided to do what Comp Sci students do best—solve the problem with tech. Our Solution? A mobile app designed specifically for college students to report lost items, map their locations, and connect with finders in real time.
+
+While we can’t change our friend’s clumsiness, we can make losing things a little less stressful and finding them a whole lot easier.
 ## Tech Stack
 Front end
   - React native
