@@ -1,5 +1,5 @@
 // Home.js
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Text, View, SafeAreaView, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Poppins_400Regular, Poppins_700Bold, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
@@ -9,9 +9,29 @@ import { Newsreader_400Regular, } from '@expo-google-fonts/newsreader';
 import { useFonts } from 'expo-font';
 import { useNavigation } from '@react-navigation/native';
 import PageButton from './Button'; // Your custom button component
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Home() {
+  const [uid, setUid] = useState(null);
   const navigation = useNavigation();
+  useEffect(() => {
+    const getUid = async () => {
+      try {
+        const storedUser = await AsyncStorage.getItem("user");
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser);
+          setUid(parsedUser.uid); // ✅ Retrieve and store UID
+          console.log("User UID:", parsedUser.uid);
+        }
+      } catch (error) {
+        console.error("Error retrieving UID:", error);
+      }
+    };
+
+    getUid();
+  }, []);
+
+
 
   let [fontsLoaded] = useFonts({
     Poppins_400Regular,
@@ -46,7 +66,7 @@ export default function Home() {
         <View style={styles.footer}>
           <PageButton
             title="Get Started"
-            onPress={() => navigation.navigate('SignUp')}
+            onPress={() => navigation.navigate(uid ? 'ReportFormSh' : 'SignUp')}
           />
         </View>
 

@@ -1,5 +1,5 @@
 // SignUp.js
-import React from 'react';
+import React, {useEffect} from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import PageButton from './Button';
@@ -10,13 +10,28 @@ import  axios  from 'axios';
 import { Alert } from 'react-native';
 // import { Poppins_700Bold } from '@expo-google-fonts/poppins';
 import { useFonts } from 'expo-font';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function SignUp() {
 
   const [isNewUser, setIsNewUser] = useState(false);
-  
+  useEffect(() => {
+    const getUid = async () => {
+      try {
+        const storedUser = await AsyncStorage.getItem("user");
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser);
+          setUid(parsedUser.uid); // ✅ Retrieve and store UID
+          console.log("User UID:", parsedUser.uid);
+        }
+      } catch (error) {
+        console.error("Error retrieving UID:", error);
+      }
+    };
+
+    getUid();
+  }, []);
 
   const navigate = useNavigation();
   // 🔹 Send OTP to backend

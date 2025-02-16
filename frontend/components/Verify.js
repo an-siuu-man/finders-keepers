@@ -28,11 +28,12 @@ export default function Verify() {
         await AsyncStorage.setItem("user", JSON.stringify(response.data.user));
         setUser(response.data.user);
         Alert.alert("Success", "You are logged in!");
+        navigation.navigate("ReportFormSh");
     } catch (error) {
         Alert.alert("Error", "Invalid OTP.");
         console.log(error);
     }
-};
+};  
 
 
 

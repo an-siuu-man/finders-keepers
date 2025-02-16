@@ -9,14 +9,14 @@ import Home from './components/Home';
 import SignUp from './components/SignUp'; // Your sign-up page component
 import Verify from './components/Verify'; // Your verification page component
 import ReportFormSh from "./components/ReportFormSh";
-  
+import Success from "./components/Success";  
+import Search from "./components/Search";
 
 
-
-// const Stack = createStackNavigator();
+const Stack = createStackNavigator();
 const App = () => {
-    // const [user, setUser] = useState(null);
-    // const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     // useEffect(() => {
     //     const checkUser = async () => {
@@ -34,24 +34,28 @@ const App = () => {
 
     // if (loading) return <ActivityIndicator size="large" style={styles.loading} />;
 
-    // return (
-    //   <NavigationContainer>
-    //   <Stack.Navigator
-    //     screenOptions={{
-    //       headerShown: false, // Hide header if you don't need it
-    //       // This option creates a slide-in horizontal transition
-    //       cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-    //     }}
-    //   >
-    //     <Stack.Screen name="Home" component={Home} />
-    //     <Stack.Screen name="SignUp" component={SignUp} />
-    //     <Stack.Screen name="Verify" component={Verify} />
-    //   </Stack.Navigator>
-    // </NavigationContainer>
-    // );
     return (
-      <ReportFormSh />
-    )
+      <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false, // Hide header if you don't need it
+          // This option creates a slide-in horizontal transition
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      >
+        <Stack.Screen name="Search" component={Search} />
+        <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="SignUp" component={SignUp} />
+        <Stack.Screen name="Verify" component={Verify} />
+        <Stack.Screen name="ReportFormSh" component={ReportFormSh} />
+        <Stack.Screen name="Success" component={Success} />
+      </Stack.Navigator>
+    </NavigationContainer>
+    );
+    // );
+    // return (
+    //   <ReportFormSh />
+    // )
 };
 
 const styles = StyleSheet.create({

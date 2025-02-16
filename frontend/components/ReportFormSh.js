@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -21,8 +21,12 @@ import {
   Inter_400Regular, Inter_500Medium,
   DMSans_400Regular, DMSans_500Medium
 } from '@expo-google-fonts/poppins';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
+import { MaterialIcons } from '@expo/vector-icons';
 
 export default function ReportFormSh() {
+  const navigation = useNavigation();
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
     Poppins_600SemiBold,
@@ -32,14 +36,55 @@ export default function ReportFormSh() {
     DMSans_400Regular,
     DMSans_500Medium,
   });
-  
   const [imageUri, setImageUri] = useState(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [isWithMe, setIsWithMe] = useState(false);
+  const [uid, setUid] = useState(null);
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
+  const [findingDesc, setFindingDesc] = useState(null);
 
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch("https://c5e1-164-58-12-125.ngrok-free.app/add-found-item", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          found_by: uid,
+          heading: title,
+          description: description,
+          latitude: latitude,
+          longitude: longitude,
+          finding_description: isWithMe ? "contact" : findingDesc,
+          image: imageUri,
+        }),
+      });
+      const data = await response.json();
+      navigation.navigate("Success");
+    } catch (error) {
+      console.error("Error:", error);
+      Alert.alert("Error", "Failed to fetch description from server.");
+    }
+  };
 
+  useEffect(() => {
+    const getUid = async () => {
+      try {
+        const storedUser = await AsyncStorage.getItem("user");
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser);
+          setUid(parsedUser.uid); // ✅ Retrieve and store UID
+          console.log("User UID:", parsedUser.uid);
+        }
+      } catch (error) {
+        console.error("Error retrieving UID:", error);
+      }
+    };
+
+    getUid();
+  }, []);
 
   const openImagePicker = async (fromCamera = false) => {
     const permissionResult = fromCamera
@@ -96,6 +141,7 @@ export default function ReportFormSh() {
   };
 
   return (
+      
     <SafeAreaView style={styles.container}>
       <KeyboardAwareScrollView
         contentContainerStyle={styles.scrollContainer}
@@ -142,10 +188,10 @@ export default function ReportFormSh() {
             placeholder="Item description"
           />
         </View>
-        <View style={{ width:'100%', height:500, marginVertical: 20,}}>
-        <Text style={styles.formHeader}>Location</Text>
-        <Text style={styles.subtitle}>Tap to select the location where you found the item.</Text>
-          <MapComponent />
+        <View style={{ width: '100%', height: 500, marginVertical: 20 }}>
+          <Text style={styles.formHeader}>Location</Text>
+          <Text style={styles.subtitle}>Tap to select the location where you found the item.</Text>
+          <MapComponent setLatitude={setLatitude} setLongitude={setLongitude} />
         </View>
 
         <Text style={styles.formHeader}>Where to find it</Text>
@@ -154,25 +200,26 @@ export default function ReportFormSh() {
           <Switch
             trackColor={{ false: "", true: "#81b0ff" }}
             ios_backgroundColor="#3e3e3e"
-            onValueChange={() => {setIsWithMe(!isWithMe)}}
+            onValueChange={() => { setIsWithMe(!isWithMe) }}
             value={isWithMe}
             style={{ marginRight: 10 }}
           />
           <Text style={styles.subtitle}>{isWithMe ? "I have the item with me" : "I don't have it with me"}</Text>
-          
         </View>
-        { !isWithMe && 
-        <>
-        <Text style={styles.inputHeader}>Please provide details</Text>
-        <TextInput 
-            style={[styles.formInputMulti, {width: '100%'}]}
-            placeholder="Where can it be found..."
-            multiline
-          />
+        {!isWithMe &&
+          <>
+            <Text style={styles.inputHeader}>Please provide details</Text>
+            <TextInput
+              style={[styles.formInputMulti, { width: '100%' }]}
+              placeholder="Where can it be found..."
+              multiline
+              value={findingDesc}
+              onChangeText={setFindingDesc}
+            />
           </>
-          }
+        }
         <View style={{ marginBottom: 20, width: '100%' }}>
-          <PageButton title="Submit" bgColor="#0F455C" onPress={() => {handleSubmit}}/>
+          <PageButton title="Submit" bgColor="#0F455C" onPress={handleSubmit} />
         </View>
       </KeyboardAwareScrollView>
     </SafeAreaView>
