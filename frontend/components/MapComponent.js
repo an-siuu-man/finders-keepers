@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
-const MapComponent = () => {
+const MapComponent = ( {setLatitude, setLongitude} ) => {
     const [marker, setMarker] = useState(null);
     const [initialRegion, setInitialRegion] = useState(null);
 
@@ -29,12 +29,16 @@ const MapComponent = () => {
     const handleMapPress = (e) => {
         const coordinate = e.nativeEvent.coordinate;
         setMarker(coordinate);
+        setLatitude(coordinate.latitude);
+        setLongitude(coordinate.longitude);
         console.log('Marker positioned at:', coordinate);
     };
 
     const handleMarkerDragEnd = (e) => {
         const coordinate = e.nativeEvent.coordinate;
         setMarker(coordinate);
+        setLatitude(coordinate.latitude);
+        setLongitude(coordinate.longitude);
         console.log('Marker repositioned at:', coordinate);
     };
 
