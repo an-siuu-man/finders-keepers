@@ -16,7 +16,7 @@ app.use(express.json({ limit: "50mb" }));  // Allow up to 50MB
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 
-app.use(cors());
+app.use(cors({ origin: "*" }));
 
 // Twilio Configuration
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
@@ -39,10 +39,8 @@ const pool = new Pool({
     host: process.env.PG_HOST,          // Usually 'localhost' or remote host
     database: process.env.PG_DATABASE,  // Database name (lost_and_found)
     password: process.env.PG_PASSWORD,  // Your PostgreSQL password
-    port: process.env.PG_PORT || 5432,  // Default PostgreSQL port
-    ssl: {
-        rejectUnauthorized: false, // For self-signed certificates
-    },
+    port: process.env.PG_PORT || 9999,  // Default PostgreSQL port
+    ssl: false,
 });
 
 
@@ -123,26 +121,45 @@ app.post("/verify-otp", async (req, res) => {
 // 🔹 Step 3: Add Found Item
 app.post("/add-found-item", async (req, res) => {
     try {
+        console.log("🔹 Received request to add found item:", req.body); 
+
         const { found_by, heading, description, latitude, longitude, image, finding_description } = req.body;
+
+        console.log("📌 Parsed values:", { found_by, heading, description, latitude, longitude, image, finding_description });
 
         if (!found_by || !heading || !description || !latitude || !longitude || !finding_description) {
             return res.status(400).json({ error: "Missing required fields" });
         }
 
+        // Convert latitude and longitude to numbers
+        const lat = parseFloat(latitude);
+        const long = parseFloat(longitude);
+
+        if (isNaN(lat) || isNaN(long)) {
+            return res.status(400).json({ error: "Invalid latitude or longitude values" });
+        }
+
+        console.log("📝 Inserting into database...");
+
         const query = `
-            INSERT INTO found_items (found_by, heading, description, tag, latitude, longitude, image, finding_description)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *;
+            INSERT INTO found_items (found_by, heading, description, latitude, longitude, image, finding_description) 
+            VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;
         `;
 
-        const values = [found_by, heading, description, tag, latitude, longitude, image, finding_description];
+        const values = [found_by, heading, description, lat, long, image, finding_description];
 
         const result = await pool.query(query, values);
+
+        console.log("✅ Insert Success:", result.rows[0]);
+
         res.status(201).json({ message: "Item added successfully", item: result.rows[0] });
 
     } catch (error) {
+        console.error("🔥 SQL Insert Error:", error);
         res.status(500).json({ error: "Error adding found item", details: error.message });
     }
 });
+
 
 // Fuzzy search for found items
 app.post("/search-lost-item", async (req, res) => {
