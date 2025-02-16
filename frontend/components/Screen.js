@@ -8,8 +8,9 @@ import {
     ScrollView
 } from "react-native";
 import CardList from "./CardList"; // Import the CardList component
+import PageButton from "./Button";
 
-const API_BASE_URL = "https://b7b0-164-58-12-125.ngrok-free.app"; // Replace with your actual backend URL
+const API_BASE_URL = "https://3b2f-164-58-12-125.ngrok-free.app"; // Replace with your actual backend URL
 
 const SearchScreen = () => {
     const [searchQuery, setSearchQuery] = useState("");
@@ -56,11 +57,16 @@ const SearchScreen = () => {
                     style={styles.searchInput}
                     placeholder="e.g., Black wallet near library..."
                     value={searchQuery}
-                    onChangeText={handleSearch}
+                    onChangeText={setSearchQuery}
                 />
+                <PageButton title="Search" onPress={() => handleSearch(searchQuery)} />
 
                 {/* 🔹 Results Display */}
-                <ScrollView style={styles.resultContainer}>
+                <ScrollView
+                    style={styles.resultContainer}
+                    showsVerticalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={false}
+                    >
                     {loading ? (
                         <Text style={styles.loadingText}>Searching...</Text>
                     ) : noResults ? (

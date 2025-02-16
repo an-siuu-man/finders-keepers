@@ -16,8 +16,8 @@ const CardList = ({ data }) => {
 
     const renderItem = ({ item }) => (
         <TouchableOpacity style={styles.card} onPress={() => setSelectedItem(item)}>
-            <Image source={{ uri: item.image }} style={styles.image} />
-            <View style={styles.textContainer}>
+                <Image source={{ uri: `data:image/jpeg;base64,${item.image}` }} style={styles.image} />            
+                <View style={styles.textContainer}>
                 <Text style={styles.heading}>{item.heading}</Text>
                 <Text style={styles.description}>{item.description}</Text>
                 <Text style={styles.time}>{getTimeAgo(item.found_at)}</Text>
@@ -28,9 +28,12 @@ const CardList = ({ data }) => {
     return (
         <SafeAreaView style={styles.safeArea}>
             <FlatList
+                style={{ flex: 1 }}
                 data={data}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={renderItem}
+                showsVerticalScrollIndicator={false}
+                showsHorizontalScrollIndicator={false}
             />
 
             {selectedItem && (
@@ -38,7 +41,7 @@ const CardList = ({ data }) => {
                     <View style={styles.modalOverlay}>
                         <View style={styles.modalContainer}>
                             <Text style={styles.modalHeading}>{selectedItem.heading}</Text>
-                            <Image source={{ uri: selectedItem.image }} style={styles.modalImage} />
+                            <Image source={{ uri: `data:image/jpeg;base64,${selectedItem.image}` }} style={styles.modalImage} />
                             <Text style={styles.modalDescription}>{selectedItem.description}</Text>
 
                             {/* Blurred "Where to Find It" Section */}
@@ -89,31 +92,113 @@ const getTimeAgo = (timestamp) => {
 
 // Styles
 const styles = {
-    safeArea: { flex: 1, backgroundColor: "#f8f8f8", padding: 10 },
-    card: { flexDirection: "row", backgroundColor: "#fff", padding: 10, marginBottom: 10, borderRadius: 8, elevation: 3 },
-    image: { width: 80, height: 80, borderRadius: 8 },
-    textContainer: { flex: 1, marginLeft: 10 },
-    heading: { fontSize: 16, fontWeight: "bold" },
-    description: { fontSize: 14, color: "#666", marginVertical: 4 },
-    time: { fontSize: 12, color: "#999", alignSelf: "flex-end" },
-
-    modalOverlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.6)", justifyContent: "center", alignItems: "center" },
-    modalContainer: { backgroundColor: "#fff", padding: 20, borderRadius: 10, width: "90%" },
-    modalHeading: { fontSize: 20, fontWeight: "bold", marginBottom: 10 },
-    modalImage: { width: "100%", height: 200, borderRadius: 10 },
-    modalDescription: { fontSize: 16, marginVertical: 10 },
-
-    hiddenLocationContainer: { marginTop: 20, borderRadius: 10, overflow: "hidden" },
-    blurredOverlay: { height: 150, backgroundColor: "rgba(0, 0, 0, 0.4)", justifyContent: "center", alignItems: "center", borderRadius: 10 },
-    blurredText: { color: "#fff", fontSize: 16, fontWeight: "bold" },
-
-    map: { width: "100%", height: 150, borderRadius: 10 },
-
-    claimButton: { marginTop: 10, backgroundColor: "#007bff", padding: 10, borderRadius: 8 },
-    claimButtonText: { color: "#fff", fontWeight: "bold" },
-
-    closeButton: { backgroundColor: "#007bff", padding: 10, borderRadius: 8, marginTop: 10, alignItems: "center" },
-    closeText: { color: "#fff", fontWeight: "bold" },
+    safeArea: { 
+        flex: 1, 
+        backgroundColor: "transparent", 
+        padding: 10 
+    },
+    card: { 
+        flexDirection: "row", 
+        // backgroundColor: "#ffffff",
+        backgroundColor: "rgba(255, 255, 255, 0.8)",
+        padding: 10, 
+        marginVertical: 10, 
+        borderRadius: 8, 
+        elevation: 3
+         
+    },
+    image: { 
+        width: 80, 
+        height: 80, 
+        borderRadius: 8 
+    },
+    textContainer: { 
+        flex: 1, 
+        marginLeft: 10 
+    },
+    heading: { 
+        fontSize: 16, 
+        fontWeight: "bold" 
+    },
+    description: { 
+        fontSize: 14, 
+        color: "#666", 
+        marginVertical: 4 
+    },
+    time: { 
+        fontSize: 12, 
+        color: "#999", 
+        alignSelf: "flex-end" 
+    },
+    modalOverlay: { 
+        flex: 1, 
+        backgroundColor: "rgba(0,0,0,0.6)", 
+        justifyContent: "center", 
+        alignItems: "center" 
+    },
+    modalContainer: { 
+        backgroundColor: "#fff", 
+        padding: 20, 
+        borderRadius: 10, 
+        width: "90%" 
+    },
+    modalHeading: { 
+        fontSize: 20, 
+        fontWeight: "bold", 
+        marginBottom: 10 
+    },
+    modalImage: { 
+        width: "100%", 
+        height: 300, 
+        borderRadius: 10 
+    },
+    modalDescription: { 
+        fontSize: 16, 
+        marginVertical: 10 
+    },
+    hiddenLocationContainer: { 
+        marginTop: 20, 
+        borderRadius: 10, 
+        overflow: "hidden" 
+    },
+    blurredOverlay: { 
+        height: 150, 
+        backgroundColor: "rgba(0, 0, 0, 0.4)", 
+        justifyContent: "center", 
+        alignItems: "center", 
+        borderRadius: 10 
+    },
+    blurredText: { 
+        color: "#fff", 
+        fontSize: 16, 
+        fontWeight: "bold" 
+    },
+    map: { 
+        width: "100%", 
+        height: 150, 
+        borderRadius: 10 
+    },
+    claimButton: { 
+        marginTop: 10, 
+        backgroundColor: "#007bff", 
+        padding: 10, 
+        borderRadius: 8 
+    },
+    claimButtonText: { 
+        color: "#fff", 
+        fontWeight: "bold" 
+    },
+    closeButton: { 
+        backgroundColor: "#007bff", 
+        padding: 10, 
+        borderRadius: 8, 
+        marginTop: 10, 
+        alignItems: "center" 
+    },
+    closeText: { 
+        color: "#fff", 
+        fontWeight: "bold" 
+    },
 };
 
 export default CardList;

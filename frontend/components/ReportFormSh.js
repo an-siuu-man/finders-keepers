@@ -37,6 +37,7 @@ export default function ReportFormSh() {
     DMSans_500Medium,
   });
   const [imageUri, setImageUri] = useState(null);
+  const [imageUrib64, setImageUrib64] = useState(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
@@ -45,10 +46,12 @@ export default function ReportFormSh() {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [findingDesc, setFindingDesc] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleSubmit = async () => {
+    setIsUploading(true);
     try {
-      const response = await fetch("https://c5e1-164-58-12-125.ngrok-free.app/add-found-item", {
+      const response = await fetch("https://3b2f-164-58-12-125.ngrok-free.app/add-found-item", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -58,14 +61,16 @@ export default function ReportFormSh() {
           latitude: latitude,
           longitude: longitude,
           finding_description: isWithMe ? "contact" : findingDesc,
-          image: imageUri,
+          image: imageUrib64,
         }),
       });
-      const data = await response.json();
       navigation.navigate("Success");
+      setIsUploading(false);
+      const data = await response.json();
     } catch (error) {
       console.error("Error:", error);
       Alert.alert("Error", "Failed to fetch description from server.");
+      setIsUploading(false);
     }
   };
 
@@ -103,13 +108,14 @@ export default function ReportFormSh() {
     if (!result.canceled) {
       setImageUri(result.assets[0].uri);
       generateDescription(result.assets[0].base64);
+      setImageUrib64(result.assets[0].base64);
     }
   };
 
   const generateDescription = async (base64Image) => {
     setLoading(true);
     try {
-      const response = await fetch("https://c5e1-164-58-12-125.ngrok-free.app/generate-description", {
+      const response = await fetch("https://3b2f-164-58-12-125.ngrok-free.app/generate-description", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ base64Image }),
@@ -164,7 +170,7 @@ export default function ReportFormSh() {
 
         {loading && (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#007bff" />
+            <ActivityIndicator size="large" color="#0F455C" />
             <Text>Generating description...</Text>
           </View>
         )}
@@ -198,8 +204,8 @@ export default function ReportFormSh() {
         <Text style={styles.subtitle}>Please select an option.</Text>
         <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', width: '100%', marginBottom: 20 }}>
           <Switch
-            trackColor={{ false: "", true: "#81b0ff" }}
-            ios_backgroundColor="#3e3e3e"
+            trackColor={{ false: "", true: "#0F455C" }}
+            ios_backgroundColor="#ffffff"
             onValueChange={() => { setIsWithMe(!isWithMe) }}
             value={isWithMe}
             style={{ marginRight: 10 }}
@@ -219,7 +225,13 @@ export default function ReportFormSh() {
           </>
         }
         <View style={{ marginBottom: 20, width: '100%' }}>
-          <PageButton title="Submit" bgColor="#0F455C" onPress={handleSubmit} />
+
+          {isUploading ? 
+
+            <ActivityIndicator size="medium" color="#0F455C" /> :
+            <PageButton title="Submit" bgColor="#0F455C" onPress={handleSubmit} />
+            }
+        
         </View>
       </KeyboardAwareScrollView>
     </SafeAreaView>

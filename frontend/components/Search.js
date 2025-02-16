@@ -30,7 +30,7 @@ export default function Search() {
 
     const handleSearch = async () => {
         try {
-            const response = await fetch(`https://c5e1-164-58-12-125.ngrok-free.app/search-lost-item`,
+            const response = await fetch(`https://7a49-164-58-12-125.ngrok-free.app/search-lost-item`,
                 {
                     method: 'POST',
                     headers: {

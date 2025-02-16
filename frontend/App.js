@@ -10,9 +10,10 @@ import SignUp from './components/SignUp'; // Your sign-up page component
 import Verify from './components/Verify'; // Your verification page component
 import ReportFormSh from "./components/ReportFormSh";
 import Success from "./components/Success";  
-import Search from "./components/Search";
+import Screen from "./components/Screen";
+import { LogBox } from 'react-native';
 
-
+LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
 const Stack = createStackNavigator();
 const App = () => {
     const [user, setUser] = useState(null);
@@ -43,8 +44,8 @@ const App = () => {
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}
       >
-        <Stack.Screen name="Search" component={Search} />
         <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="Screen" component={Screen} />
         <Stack.Screen name="SignUp" component={SignUp} />
         <Stack.Screen name="Verify" component={Verify} />
         <Stack.Screen name="ReportFormSh" component={ReportFormSh} />

@@ -38,7 +38,7 @@ export default function SignUp() {
   const sendOtp = async (phNo) => {
     try {
       console.log(phNo);
-        const response = await axios.post("https://c5e1-164-58-12-125.ngrok-free.app/send-otp", { phoneNumber: phNo });
+        const response = await axios.post("https://3b2f-164-58-12-125.ngrok-free.app/send-otp", { phoneNumber: phNo });
         setIsNewUser(response.data.isNewUser);
         console.log(response.data.isNewUser);
         navigate.navigate('Verify', { phoneNumber: phNo, isNewUser: response.data.isNewUser });

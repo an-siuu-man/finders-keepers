@@ -19,7 +19,7 @@ export default function Verify() {
   const verifyOtp = async (phNo, otp, isNew, name) => {
     try {
       console.log(phNo, otp, isNew, name);
-        const response = await axios.post("https://c5e1-164-58-12-125.ngrok-free.app/verify-otp", {
+        const response = await axios.post("https://3b2f-164-58-12-125.ngrok-free.app/verify-otp", {
             phoneNumber: phNo,
             code: otp,
             name: isNew ? name : undefined,
