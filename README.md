@@ -1,4 +1,4 @@
-# finders-keepers
+# Finders Keepers
 Project for Hacklahoma 2025
 
 ## Inspiration
@@ -29,12 +29,11 @@ Back end
 
 
 ## Use case
+This mobile app makes it easier for people to find and return lost items. When someone finds a lost item, they can take a picture, upload it to the app, and pin its location on a map.
 
+The app uses **OpenAI Vision API** to analyze the image and generate a description. It then stores important details like the lost date, location, and item description in a database.
 
-## Features
-
-
-## On the Horizon
+If someone is looking for their lost item, they can enter a description in the app. In the background, the app uses fuzzy logic to match their input with reported found items. If there’s a match, the app pinpoints the item’s location on the built-in map, making it easy for the owner to retrieve it.
 
 
 
